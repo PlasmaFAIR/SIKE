@@ -110,3 +110,34 @@ def test_maxwellian_dist(T: float, n: float):
 
     # The first moment should be proportional to the temperature
     assert np.isclose(first_moment, 1.5 * n * T, atol=1e-3, rtol=1e-3)
+
+
+@settings(deadline=None)  # Removes test-timeout if expensive
+@given(
+    T1=st.sampled_from([1.0, 5.0, 10.0, 100.0, 1000.0]),
+    T2=st.sampled_from([1.0, 5.0, 10.0, 100.0, 1000.0]),
+    n1=st.sampled_from([1e18, 1e19, 1e20]),
+    n2=st.sampled_from([1e18, 1e19, 1e20])
+)
+def test_bimaxwellian_dist(T1: float, T2: float, n1: float, n2: float):
+    """Test bimaxwellian function
+
+    :param T1: Temperature of Maxwellian 1
+    :param T2: Temperature of Maxwellian 2
+    :param n1: Density of Maxwellian 1
+    :param n2: Density of Maxwellian 2
+    """
+
+    _, Egrid = generate_vgrid(nv=1000)
+
+    dist = bimaxwellian(T1, n1, T2, n2, Egrid)
+
+    jacobian = 2.0 * np.pi * np.sqrt(Egrid)
+    zeroth_moment = np.trapezoid(dist * jacobian, x=Egrid)
+    first_moment = np.trapezoid(dist * jacobian * Egrid, x=Egrid)
+
+    # The zeroth moment of the distribution should be equal to the sum of the densities
+    assert np.isclose(zeroth_moment, n1+n2, atol=1e-3, rtol=1e-3)
+
+    # The first moment should be proportional to the weighted sum of the temperatures
+    assert np.isclose(first_moment, 1.5 * (n1*T1 + n2*T2), atol=1e-3, rtol=1e-3)
