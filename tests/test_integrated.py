@@ -30,6 +30,7 @@ def check_run_test(element: str) -> None:
 
 @pytest.mark.skipif(not data_exists("T"), reason="Could not find Testium data")
 def test_testium(snapshot):
+    """Testium with evolve() method"""
     nx = 100
     Te = np.linspace(1, 10, nx)
     ne = 1e20 * np.ones(nx)
@@ -40,6 +41,23 @@ def test_testium(snapshot):
     Zavg = spp.get_Zavg(ds)
 
     assert np.round(Zavg.values, 6).tolist() == snapshot
+
+
+@pytest.mark.skipif(not data_exists("T"), reason="Testium data not downloaded - see README for instructions")
+def test_sigma_positive():
+    """Compute cross-sections for testium and ensure all are positive"""
+    nx = 100
+    Te = np.linspace(1, 10, nx)
+    ne = 1e20 * np.ones(nx)
+
+    c = sike.SIKERun(Te=Te, ne=ne, element="T")
+
+    transitions = [t for t in c.impurity.transitions if isinstance(t, (sike.atomics.transition.ExTrans,
+                                                                       sike.atomics.transition.IzTrans,
+                                                                       sike.atomics.transition.RRTrans))]
+
+    for transition in transitions:
+        assert np.all(transition.sigma >= 0.0)
 
 
 @pytest.mark.skipif(not data_exists("H"), reason="Hydrogen data not downloaded - see README for instructions")
