@@ -20,7 +20,6 @@ dependencies = [
     "xarray",
     "matplotlib",
     "typing-extensions>=4.14.0",
-    "syrupy>=4.9.1",
 ]
 dynamic = ["version"]
 
@@ -28,7 +27,8 @@ dynamic = ["version"]
 test = [
     "pytest>=8.0",
     "pytest-cov",
-    "hypothesis"
+    "hypothesis",
+    "syrupy>=4.9.1",
 ]
 
 [tool.setuptools_scm]

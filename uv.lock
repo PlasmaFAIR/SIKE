@@ -731,7 +731,6 @@ dependencies = [
     { name = "numpy" },
     { name = "requests" },
     { name = "scipy" },
-    { name = "syrupy" },
     { name = "typing-extensions" },
     { name = "xarray" },
 ]
@@ -741,6 +740,7 @@ test = [
     { name = "hypothesis" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "syrupy" },
 ]
 
 [package.metadata]
@@ -753,7 +753,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'test'" },
     { name = "requests" },
     { name = "scipy", specifier = ">=1.14" },
-    { name = "syrupy", specifier = ">=4.9.1" },
+    { name = "syrupy", marker = "extra == 'test'", specifier = ">=4.9.1" },
     { name = "typing-extensions", specifier = ">=4.14.0" },
     { name = "xarray" },
 ]
